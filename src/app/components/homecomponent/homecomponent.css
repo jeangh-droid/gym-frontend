@@ -1,0 +1,18 @@
+.integrantes {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.integrante {
+  text-align: center;
+}
+
+.integrante img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+}
