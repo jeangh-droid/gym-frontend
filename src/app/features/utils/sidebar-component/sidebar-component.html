@@ -1,0 +1,102 @@
+<div
+  class="fixed inset-y-0 left-0 w-64 bg-white border-r h-screen">
+
+  <div class="flex flex-col h-full">
+
+    <!-- Logo -->
+    <header class="p-5 border-b">
+
+      <div class="flex flex-col">
+
+        <span class="font-bold text-2xl text-slate-900">
+          GYM UNTELS
+        </span>
+
+        <span class="text-xs text-gray-500">
+          Sistema de Entrenamiento
+        </span>
+
+      </div>
+
+    </header>
+
+    <!-- Navegación -->
+    <nav class="flex-1 p-3">
+
+      <ul class="space-y-1">
+
+        <li>
+          <a
+            routerLink="./lista-usuarios"
+            routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition">
+
+            📊 Dashboard
+
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/rutinas"
+            routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition">
+
+            🏋️ Rutinas
+
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/ejercicios"
+            routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition">
+
+            💪 Ejercicios
+
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/progreso"
+            routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition">
+
+            📈 Progreso
+
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/perfil"
+            routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition">
+
+            👤 Perfil
+
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- Footer -->
+    <footer class="p-4 border-t">
+
+      <button
+        (click)="logout()"
+        class="w-full text-left px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition">
+
+        Cerrar sesión
+
+      </button>
+
+    </footer>
+
+  </div>
+
+</div>

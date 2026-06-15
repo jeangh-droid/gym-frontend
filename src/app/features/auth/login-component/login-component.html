@@ -1,0 +1,92 @@
+<div class="min-h-screen flex">
+
+  <!-- Panel izquierdo -->
+  <div class="hidden lg:flex w-1/2 bg-slate-900 text-white items-center justify-center">
+
+    <div class="max-w-md px-8">
+      <h1 class="text-5xl font-bold mb-6">
+        GYM UNTELS
+      </h1>
+
+      <p class="text-slate-300 text-lg">
+        Sistema inteligente para la planificación y seguimiento
+        de rutinas de entrenamiento personalizadas.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Formulario -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center bg-gray-50">
+
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+
+      <div class="mb-8 text-center">
+
+        <h2 class="text-3xl font-bold text-gray-800">
+          Bienvenido
+        </h2>
+
+        <p class="text-gray-500 mt-2">
+          Inicia sesión con tu correo institucional
+        </p>
+
+      </div>
+
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="login()"
+        class="space-y-5">
+
+        <div>
+
+          <label class="block text-sm font-medium mb-2">
+            Correo Institucional
+          </label>
+
+          <input
+            type="email"
+            formControlName="correoInstitucional"
+            placeholder="usuario@untels.edu.pe"
+            class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900">
+
+        </div>
+
+        <div>
+
+          <label class="block text-sm font-medium mb-2">
+            Contraseña
+          </label>
+
+          <input
+            type="password"
+            formControlName="contrasena"
+            placeholder="********"
+            class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900">
+
+        </div>
+
+        @if(error){
+
+          <div class="bg-red-50 border border-red-200 text-red-600 rounded-lg px-4 py-3">
+            {{ error }}
+          </div>
+
+        }
+
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="w-full bg-slate-900 text-white py-3 rounded-lg hover:bg-slate-800 transition">
+
+          {{ loading ? 'Ingresando...' : 'Ingresar' }}
+
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
