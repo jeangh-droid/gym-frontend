@@ -1,0 +1,9 @@
+<div class="container">
+  <p>Joel</p>
+  <div class="integrantes">
+    <div class="integrante" *ngFor="let integrante of integrantes">
+      <img [src]="integrante.foto" [alt]="integrante.nombre" />
+      <p>{{ integrante.nombre }}</p>
+    </div>
+  </div>
+</div>
