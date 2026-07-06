@@ -1,1 +1,66 @@
-<p>noticiascomponent works!</p>
+<div class="p-8">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-[#0a1128]">Noticias</h1>
+      <p class="text-gray-500 text-sm">{{ noticias().length }} publicaciones</p>
+    </div>
+    @if (isAdmin) {
+      <button (click)="abrirCrear()"
+        class="bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold px-5 py-2.5 rounded-xl transition-all">
+        + Nueva noticia
+      </button>
+    }
+  </div>
+
+  @if (cargando()) {
+    <p class="text-gray-400">Cargando noticias...</p>
+  } @else if (error()) {
+    <p class="text-red-500">{{ error() }}</p>
+  } @else if (noticias().length === 0) {
+    <p class="text-gray-400">No hay noticias registradas.</p>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (n of noticias(); track n.idNoticia) {
+        <div class="bg-white rounded-2xl shadow overflow-hidden flex flex-col">
+          <img [src]="n.imagenUrl || 'https://placehold.co/400x200'" class="h-40 w-full object-cover" alt="">
+          <div class="p-4 flex-1 flex flex-col">
+            <span class="text-[10px] uppercase tracking-wide text-blue-700 bg-blue-100 w-fit px-2 py-0.5 rounded-full mb-2">{{ n.tipo }}</span>
+            <h3 class="font-bold text-[#0a1128] mb-1">{{ n.titulo }}</h3>
+            <p class="text-sm text-gray-500 flex-1 line-clamp-3">{{ n.contenido }}</p>
+            <p class="text-xs text-gray-400 mt-3">{{ n.fechaPublicacion }}</p>
+
+            @if (isAdmin) {
+              <div class="flex gap-2 mt-3">
+                <button (click)="abrirEditar(n)" class="flex-1 text-sm border border-gray-300 rounded-lg py-1.5 hover:bg-gray-50">Editar</button>
+                <button (click)="eliminar(n.idNoticia)" class="flex-1 text-sm border border-red-300 text-red-600 rounded-lg py-1.5 hover:bg-red-50">Eliminar</button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (modo() && isAdmin) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+        <h2 class="text-lg font-bold text-[#0a1128] mb-4">{{ modo() === 'crear' ? 'Nueva noticia' : 'Editar noticia' }}</h2>
+        <div class="space-y-3">
+          <input [(ngModel)]="form.titulo" placeholder="Título" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <select [(ngModel)]="form.tipo" class="w-full border rounded-lg px-3 py-2 text-sm">
+            <option value="General">General</option>
+            <option value="Evento">Evento</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Promoción">Promoción</option>
+          </select>
+          <input [(ngModel)]="form.imagenUrl" placeholder="URL de imagen" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <textarea [(ngModel)]="form.contenido" placeholder="Contenido" rows="4" class="w-full border rounded-lg px-3 py-2 text-sm"></textarea>
+        </div>
+        <div class="flex gap-3 mt-5">
+          <button (click)="cerrar()" class="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50">Cancelar</button>
+          <button (click)="guardar()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold rounded-lg py-2 text-sm">Guardar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

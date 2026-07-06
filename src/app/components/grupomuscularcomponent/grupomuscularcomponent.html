@@ -1,0 +1,49 @@
+<div class="p-8">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-[#0a1128]">Grupo Muscular</h1>
+      <p class="text-gray-500 text-sm">{{ grupos().length }} grupos registrados</p>
+    </div>
+    <button (click)="abrirCrear()" class="bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold px-5 py-2.5 rounded-xl">+ Nuevo grupo</button>
+  </div>
+
+  @if (cargando()) {
+    <p class="text-gray-400">Cargando grupos musculares...</p>
+  } @else if (error()) {
+    <p class="text-red-500">{{ error() }}</p>
+  } @else {
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      @for (g of grupos(); track g.idGrupoMuscular) {
+        <div class="bg-white rounded-2xl shadow p-4 flex flex-col items-center text-center">
+          <div class="w-14 h-14 rounded-full mb-3" [style.background]="g.colorIndicador"></div>
+          <h3 class="font-semibold text-[#0a1128]">{{ g.nombre }}</h3>
+          <div class="flex gap-2 mt-3 w-full">
+            <button (click)="abrirEditar(g)" class="flex-1 text-xs border border-gray-300 rounded-lg py-1.5 hover:bg-gray-50">Editar</button>
+            <button (click)="eliminar(g.idGrupoMuscular)" class="flex-1 text-xs border border-red-300 text-red-600 rounded-lg py-1.5 hover:bg-red-50">Eliminar</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (modo()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+        <h2 class="text-lg font-bold text-[#0a1128] mb-4">{{ modo() === 'crear' ? 'Nuevo grupo muscular' : 'Editar grupo muscular' }}</h2>
+        <div class="space-y-3">
+          <input [(ngModel)]="form.nombre" placeholder="Nombre" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <input [(ngModel)]="form.imagenGrupo" placeholder="URL de imagen" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <div class="flex items-center gap-3">
+            <label class="text-sm text-gray-500">Color</label>
+            <input type="color" [(ngModel)]="form.colorIndicador" class="w-12 h-9 border rounded">
+          </div>
+          <textarea [(ngModel)]="form.descripcion" placeholder="Descripción" rows="3" class="w-full border rounded-lg px-3 py-2 text-sm"></textarea>
+        </div>
+        <div class="flex gap-3 mt-5">
+          <button (click)="cerrar()" class="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50">Cancelar</button>
+          <button (click)="guardar()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold rounded-lg py-2 text-sm">Guardar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

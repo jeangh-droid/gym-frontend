@@ -1,92 +1,56 @@
-<div class="min-h-screen flex">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
 
-  <!-- Panel izquierdo -->
-  <div class="hidden lg:flex w-1/2 bg-slate-900 text-white items-center justify-center">
-
-    <div class="max-w-md px-8">
-      <h1 class="text-5xl font-bold mb-6">
-        GYM UNTELS
-      </h1>
-
-      <p class="text-slate-300 text-lg">
-        Sistema inteligente para la planificación y seguimiento
-        de rutinas de entrenamiento personalizadas.
-      </p>
+    <div class="flex flex-col items-center mb-6">
+      <div class="w-14 h-14 rounded-2xl bg-[#0a1128] flex items-center justify-center mb-3">
+        <img src="/fotos/logoGym.png" alt="LogoGymUntels" class="rounded-xl">
+      </div>
+      <h1 class="text-xl font-extrabold text-[#0a1128] tracking-tight">GYM UNTELS</h1>
+      <p class="text-xs text-gray-400 text-center mt-1">FUERZA Y DISCIPLINA PARA TU FUTURO ACADÉMICO.</p>
     </div>
 
-  </div>
+    <h2 class="text-lg font-bold text-[#0a1128]">Bienvenido de nuevo</h2>
+    <p class="text-sm text-gray-400 mb-6">Ingresa tus credenciales para continuar entrenando</p>
 
-  <!-- Formulario -->
-  <div class="w-full lg:w-1/2 flex items-center justify-center bg-gray-50">
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-4">
 
-    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
-
-      <div class="mb-8 text-center">
-
-        <h2 class="text-3xl font-bold text-gray-800">
-          Bienvenido
-        </h2>
-
-        <p class="text-gray-500 mt-2">
-          Inicia sesión con tu correo institucional
-        </p>
-
+      <div>
+        <label class="text-sm font-medium text-gray-600">Correo</label>
+        <input formControlName="correoInstitucional" type="email" placeholder="nombre@untels.edu.pe"
+          class="w-full border rounded-xl px-3 py-2.5 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+        @if (correoInvalido) {
+          <p class="text-xs text-red-500 mt-1">Ingresa tu correo institucional @untels.edu.pe</p>
+        }
       </div>
 
-      <form
-        [formGroup]="loginForm"
-        (ngSubmit)="login()"
-        class="space-y-5">
-
-        <div>
-
-          <label class="block text-sm font-medium mb-2">
-            Correo Institucional
-          </label>
-
-          <input
-            type="email"
-            formControlName="correoInstitucional"
-            placeholder="usuario@untels.edu.pe"
-            class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900">
-
+      <div>
+        <label class="text-sm font-medium text-gray-600">Contraseña</label>
+        <div class="relative mt-1">
+          <input [type]="mostrarContrasena() ? 'text' : 'password'" formControlName="contrasena" placeholder="••••••••"
+            class="w-full border rounded-xl px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500">
+          <button type="button" (click)="toggleContrasena()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+          </button>
         </div>
-
-        <div>
-
-          <label class="block text-sm font-medium mb-2">
-            Contraseña
-          </label>
-
-          <input
-            type="password"
-            formControlName="contrasena"
-            placeholder="********"
-            class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900">
-
-        </div>
-
-        @if(error){
-
-          <div class="bg-red-50 border border-red-200 text-red-600 rounded-lg px-4 py-3">
-            {{ error }}
-          </div>
-
+        @if (contrasenaInvalida) {
+          <p class="text-xs text-red-500 mt-1">
+            La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula, un número y un carácter especial.
+          </p>
         }
+      </div>
 
-        <button
-          type="submit"
-          [disabled]="loading"
-          class="w-full bg-slate-900 text-white py-3 rounded-lg hover:bg-slate-800 transition">
+      @if (error) {
+        <p class="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ error }}</p>
+      }
 
-          {{ loading ? 'Ingresando...' : 'Ingresar' }}
+      <button type="submit" [disabled]="loading"
+        class="w-full bg-yellow-500 hover:bg-yellow-400 disabled:opacity-60 text-[#0a1128] font-bold py-3 rounded-xl transition-all">
+        {{ loading ? 'Ingresando...' : 'Iniciar sesión →' }}
+      </button>
+    </form>
 
-        </button>
-
-      </form>
-
-    </div>
-
+    <p class="text-center text-sm text-gray-500 mt-6">
+      ¿No tienes cuenta? <a routerLink="/registro" class="text-yellow-600 font-semibold hover:underline">Regístrate</a>
+    </p>
   </div>
-
 </div>
