@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ReservaAdminDTO {
   idReserva: number;
@@ -14,7 +15,7 @@ export interface ReservaAdminDTO {
 @Injectable({ providedIn: 'root' })
 export class ReservaService {
   private http = inject(HttpClient);
-  private url = 'http://localhost:8080/api/reservas';
+  private url = `${environment.apiUrl}/api/reservas`;
 
   // USER: Ver historial
   getHistorial(idUsuario: number): Observable<any[]> {

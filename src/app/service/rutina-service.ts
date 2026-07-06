@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface RutinaDTO {
   idrutina: number; // Asegúrate de que coincida con el JSON exacto de tu Spring Boot
@@ -18,7 +19,7 @@ export interface RutinaInsertDTO {
 @Injectable({ providedIn: 'root' })
 export class RutinaService {
   private http = inject(HttpClient);
-  private url = 'http://localhost:8080/api/rutina';
+  private url = `${environment.apiUrl}/api/rutina`;
 
   getRutinas(): Observable<RutinaDTO[]> {
     return this.http.get<RutinaDTO[]>(`${this.url}/lista`);
