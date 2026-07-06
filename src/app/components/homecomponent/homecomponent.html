@@ -1,9 +1,105 @@
-<div class="container">
-  <p>Joel</p>
-  <div class="integrantes">
-    <div class="integrante" *ngFor="let integrante of integrantes">
-      <img [src]="integrante.foto" [alt]="integrante.nombre" />
-      <p>{{ integrante.nombre }}</p>
+<div class="p-8">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-[#0a1128]">Hola, {{ userName }}</h1>
+    <p class="text-gray-500 text-sm">
+      {{ isAdmin ? 'Resumen general del gimnasio' : 'Esto es lo nuevo para ti hoy' }}
+    </p>
+  </div>
+
+  @if (isAdmin) {
+    <!-- ==================== DASHBOARD ADMIN ==================== -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Usuarios</p>
+        <p class="text-3xl font-bold text-[#0a1128]">{{ totalUsuarios() }}</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Noticias</p>
+        <p class="text-3xl font-bold text-[#0a1128]">{{ totalNoticias() }}</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Ejercicios</p>
+        <p class="text-3xl font-bold text-[#0a1128]">{{ totalEjercicios() }}</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5">
+        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Grupos musculares</p>
+        <p class="text-3xl font-bold text-[#0a1128]">{{ totalGrupos() }}</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="font-bold text-[#0a1128] mb-4">Últimas noticias publicadas</h2>
+        @if (ultimasNoticias().length === 0) {
+          <p class="text-gray-400 text-sm">Aún no hay noticias.</p>
+        } @else {
+          <div class="space-y-3">
+            @for (n of ultimasNoticias(); track n.idNoticia) {
+              <div class="flex items-center gap-3 border-b pb-3 last:border-0">
+                <img [src]="n.imagenUrl || 'https://placehold.co/60x60'" class="w-12 h-12 rounded-lg object-cover">
+                <div>
+                  <p class="font-semibold text-sm text-[#0a1128]">{{ n.titulo }}</p>
+                  <p class="text-xs text-gray-400">{{ n.fechaPublicacion }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        <a routerLink="/menu/noticias" class="text-sm text-yellow-600 font-semibold mt-4 inline-block hover:underline">Ver todas →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-center items-start gap-3">
+        <h2 class="font-bold text-[#0a1128]">Accesos rápidos</h2>
+        <a routerLink="/menu/usuarios" class="w-full text-center bg-[#0a1128] text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-[#1c2541]">Control de Usuarios</a>
+        <a routerLink="/menu/grupo-muscular" class="w-full text-center border border-gray-300 rounded-xl py-2.5 text-sm font-semibold hover:bg-gray-50">Grupo Muscular</a>
+        <a routerLink="/menu/ejercicios" class="w-full text-center border border-gray-300 rounded-xl py-2.5 text-sm font-semibold hover:bg-gray-50">Gestionar Ejercicios</a>
+      </div>
+    </div>
+
+  } @else {
+    <!-- ==================== DASHBOARD USUARIO ==================== -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="font-bold text-[#0a1128] mb-4">Últimas noticias</h2>
+        @if (ultimasNoticias().length === 0) {
+          <p class="text-gray-400 text-sm">No hay noticias por ahora.</p>
+        } @else {
+          <div class="space-y-3">
+            @for (n of ultimasNoticias(); track n.idNoticia) {
+              <div class="flex items-center gap-3 border-b pb-3 last:border-0">
+                <img [src]="n.imagenUrl || 'https://placehold.co/60x60'" class="w-12 h-12 rounded-lg object-cover">
+                <div>
+                  <p class="font-semibold text-sm text-[#0a1128]">{{ n.titulo }}</p>
+                  <p class="text-xs text-gray-400">{{ n.fechaPublicacion }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        <a routerLink="/menu/noticias" class="text-sm text-yellow-600 font-semibold mt-4 inline-block hover:underline">Ver todas →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-center items-start gap-3">
+        <h2 class="font-bold text-[#0a1128]">¿Qué quieres hacer hoy?</h2>
+        <a routerLink="/menu/ejercicios" class="w-full text-center bg-yellow-500 text-[#0a1128] rounded-xl py-2.5 text-sm font-semibold hover:bg-yellow-400">Ver catálogo de ejercicios</a>
+        <a routerLink="/menu/perfil" class="w-full text-center border border-gray-300 rounded-xl py-2.5 text-sm font-semibold hover:bg-gray-50">Ir a mi perfil</a>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== EQUIPO DE DESARROLLO ==================== -->
+  <div class="mt-10 bg-white rounded-2xl shadow p-6">
+    <h2 class="font-bold text-[#0a1128] mb-5">Equipo de desarrollo</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+      @for (integrante of integrantes; track integrante.nombre) {
+        <div class="flex flex-col items-center text-center">
+          <img [src]="integrante.foto" [alt]="integrante.nombre"
+            class="w-40 h-60 object-cover border-2 border-yellow-500 mb-2">
+          <p class="text-sm font-semibold text-[#0a1128]">{{ integrante.nombre }}</p>
+        </div>
+      }
     </div>
   </div>
+
 </div>

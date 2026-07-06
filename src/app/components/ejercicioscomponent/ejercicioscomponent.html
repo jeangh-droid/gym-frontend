@@ -1,1 +1,70 @@
-<p>ejercicioscomponent works!</p>
+<div class="p-8">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-[#0a1128]">Ejercicios</h1>
+      <p class="text-gray-500 text-sm">{{ ejercicios().length }} en catálogo</p>
+    </div>
+    @if (isAdmin) {
+      <button (click)="abrirCrear()" class="bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold px-5 py-2.5 rounded-xl">+ Nuevo ejercicio</button>
+    }
+  </div>
+
+  <select (change)="filtrar($any($event.target).value)" class="mb-5 border rounded-lg px-3 py-2 text-sm">
+    <option value="">Todos los grupos musculares</option>
+    @for (g of grupos(); track g.idGrupoMuscular) {
+      <option [value]="g.idGrupoMuscular">{{ g.nombre }}</option>
+    }
+  </select>
+
+  @if (cargando()) {
+    <p class="text-gray-400">Cargando ejercicios...</p>
+  } @else if (error()) {
+    <p class="text-red-500">{{ error() }}</p>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (e of ejercicios(); track e.idEjercicio) {
+        <div class="bg-white rounded-2xl shadow overflow-hidden flex flex-col">
+          <img [src]="e.imagenUrl || 'https://placehold.co/400x200'" class="h-36 w-full object-cover" alt="">
+          <div class="p-4 flex-1 flex flex-col">
+            <span class="text-[10px] uppercase tracking-wide w-fit px-2 py-0.5 rounded-full mb-2 text-white"
+              [style.background]="colorGrupo(e.idGrupoMuscular)">{{ nombreGrupo(e.idGrupoMuscular) }}</span>
+            <h3 class="font-bold text-[#0a1128]">{{ e.nombre }}</h3>
+            <p class="text-sm text-gray-500 flex-1 line-clamp-2">{{ e.descripcion }}</p>
+            <p class="text-xs text-gray-400 mt-2">Equipo: {{ e.equipo || 'Ninguno' }}</p>
+
+            @if (isAdmin) {
+              <div class="flex gap-2 mt-3">
+                <button (click)="abrirEditar(e)" class="flex-1 text-sm border border-gray-300 rounded-lg py-1.5 hover:bg-gray-50">Editar</button>
+                <button (click)="eliminar(e.idEjercicio)" class="flex-1 text-sm border border-red-300 text-red-600 rounded-lg py-1.5 hover:bg-red-50">Eliminar</button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (modo() && isAdmin) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+        <h2 class="text-lg font-bold text-[#0a1128] mb-4">{{ modo() === 'crear' ? 'Nuevo ejercicio' : 'Editar ejercicio' }}</h2>
+        <div class="space-y-3">
+          <input [(ngModel)]="form.nombre" placeholder="Nombre" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <select [(ngModel)]="form.idGrupoMuscular" class="w-full border rounded-lg px-3 py-2 text-sm">
+            <option [ngValue]="0" disabled>Selecciona un grupo muscular</option>
+            @for (g of grupos(); track g.idGrupoMuscular) {
+              <option [ngValue]="g.idGrupoMuscular">{{ g.nombre }}</option>
+            }
+          </select>
+          <input [(ngModel)]="form.equipo" placeholder="Equipo (opcional)" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <input [(ngModel)]="form.imagenUrl" placeholder="URL de imagen" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <textarea [(ngModel)]="form.descripcion" placeholder="Descripción" rows="3" class="w-full border rounded-lg px-3 py-2 text-sm"></textarea>
+        </div>
+        <div class="flex gap-3 mt-5">
+          <button (click)="cerrar()" class="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50">Cancelar</button>
+          <button (click)="guardar()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold rounded-lg py-2 text-sm">Guardar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

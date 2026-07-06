@@ -1,0 +1,46 @@
+<div class="p-8">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-[#0a1128]">Control de Usuarios</h1>
+      <p class="text-gray-500 text-sm">{{ total() }} usuarios registrados</p>
+    </div>
+    <input [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)"
+      placeholder="Buscar por nombre o correo..." class="border rounded-xl px-4 py-2 text-sm w-72">
+  </div>
+
+  @if (cargando()) {
+    <p class="text-gray-400">Cargando usuarios...</p>
+  } @else if (error()) {
+    <p class="text-red-500">{{ error() }}</p>
+  } @else {
+    <table class="w-full bg-white rounded-xl shadow overflow-hidden">
+      <thead class="bg-[#0a1128] text-white text-sm">
+        <tr>
+          <th class="p-3 text-left">Nombre</th>
+          <th class="p-3 text-left">Correo</th>
+          <th class="p-3 text-left">Peso</th>
+          <th class="p-3 text-left">Estatura</th>
+          <th class="p-3 text-left">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of usuariosFiltrados(); track u.idUsuario) {
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-3">{{ u.nombreCompleto }}</td>
+            <td class="p-3">{{ u.correoInstitucional }}</td>
+            <td class="p-3">{{ u.peso }} kg</td>
+            <td class="p-3">{{ u.estatura }} m</td>
+            <td class="p-3">
+              <button (click)="eliminar(u.idUsuario, u.nombreCompleto)"
+                class="text-sm border border-red-300 text-red-600 rounded-lg px-3 py-1 hover:bg-red-50">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="p-4 text-center text-gray-400">Sin resultados</td></tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

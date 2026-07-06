@@ -1,1 +1,218 @@
-<p>agendacomponent works!</p>
+<div class="p-4 md:p-8 max-w-7xl mx-auto font-sans">
+
+  <!-- Spinner de Carga General -->
+  <div *ngIf="cargando()" class="flex justify-center items-center py-20">
+    <svg class="animate-spin h-10 w-10 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  </div>
+
+  <div *ngIf="!cargando()">
+    <!-- ============================================== -->
+    <!-- VISTA ADMINISTRADOR (CRUD)                     -->
+    <!-- ============================================== -->
+    <div *ngIf="isAdmin()" class="admin-panel animate-fade-in">
+      <header class="flex flex-col md:flex-row md:justify-between md:items-center mb-8 gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Gestión General de Reservas
+          </h1>
+          <p class="text-gray-500 text-sm mt-1">Supervisa y gestiona los aforos de todos los miembros del gimnasio.</p>
+        </div>
+        <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2.5 px-6 rounded-lg shadow transition-colors flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Añadir Reserva Manual
+        </button>
+      </header>
+
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 text-sm text-left">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-4 font-semibold text-gray-600 uppercase">Miembro</th>
+                <th class="px-6 py-4 font-semibold text-gray-600 uppercase">Fecha</th>
+                <th class="px-6 py-4 font-semibold text-gray-600 uppercase">Horario</th>
+                <th class="px-6 py-4 font-semibold text-gray-600 uppercase">Estado</th>
+                <th class="px-6 py-4 font-semibold text-gray-600 uppercase text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <tr *ngFor="let res of reservas()" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-bold text-gray-800">{{ res.nombreUsuario || 'Usuario' }}</td>
+                <td class="px-6 py-4 text-gray-500 font-medium">{{ res.fechaReserva }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ res.horaInicio }} - {{ res.horaFin }}</td>
+                <td class="px-6 py-4">
+                  <span class="px-3 py-1 inline-flex text-xs font-bold rounded-full"
+                        [ngClass]="{'bg-green-100 text-green-800': res.estado === 'ASISTIDO', 'bg-yellow-100 text-yellow-800': res.estado === 'ACTIVA' || res.estado === 'PENDIENTE', 'bg-red-100 text-red-800': res.estado === 'CANCELADO'}">
+                    {{ res.estado }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <button *ngIf="res.estado !== 'CANCELADO'" class="text-xs bg-red-50 hover:bg-red-100 text-red-700 font-bold py-1.5 px-3 rounded-lg border border-red-200 transition-colors">
+                    Forzar Cancelación
+                  </button>
+                  <span *ngIf="res.estado === 'CANCELADO'" class="text-xs text-gray-400 italic">Sin acciones</span>
+                </td>
+              </tr>
+              <tr *ngIf="reservas().length === 0">
+                <td colspan="5" class="px-6 py-10 text-center text-gray-500">No hay reservas registradas.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA USUARIO (Diseño avanzado)                -->
+    <!-- ============================================== -->
+    <div *ngIf="!isAdmin()" class="user-panel animate-fade-in">
+      
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
+            <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Agenda
+          </h1>
+          <p class="text-gray-500 text-sm mt-1">Reserva tu horario, organiza tu semana y mantén la constancia.</p>
+        </div>
+        <button class="text-gray-500 bg-white border border-gray-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          ¿Necesitas ayuda?
+        </button>
+      </header>
+
+      <!-- Stats Cards (Simuladas del diseño) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+          <div class="bg-blue-50 text-blue-600 p-3 rounded-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">Próxima reserva</p>
+            <p class="font-bold text-gray-800">Mañana, 7:00 AM</p>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+          <div class="bg-gray-50 text-gray-600 p-3 rounded-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">Reservas este mes</p>
+            <p class="font-bold text-gray-800">8 <span class="text-green-500 text-xs font-normal">+2 vs. mes pasado</span></p>
+          </div>
+        </div>
+        <!-- Más tarjetas de stats aquí si es necesario -->
+      </div>
+
+      <!-- Grid Layout Principal -->
+      <div class="flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left: Calendario y Grilla de Horas -->
+        <div class="flex-grow bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="font-bold text-lg mb-6 text-gray-800">Calendario de reservas</h3>
+          
+          <!-- Selector de días estático para UI -->
+          <div class="flex justify-between items-center mb-6 overflow-x-auto gap-2 pb-2">
+            <button class="flex flex-col items-center justify-center w-14 h-16 rounded-lg text-gray-500 hover:bg-gray-50">
+              <span class="text-xs">LUN</span><span class="text-xl font-bold">19</span>
+            </button>
+            <button class="flex flex-col items-center justify-center w-14 h-16 rounded-lg bg-[#0a1128] text-white shadow-md relative">
+              <span class="text-xs">MAR</span><span class="text-xl font-bold">20</span>
+              <span class="absolute bottom-1 w-1.5 h-1.5 bg-yellow-500 rounded-full"></span>
+            </button>
+            <button class="flex flex-col items-center justify-center w-14 h-16 rounded-lg text-gray-500 hover:bg-gray-50">
+              <span class="text-xs">MIÉ</span><span class="text-xl font-bold">21</span>
+            </button>
+            <button class="flex flex-col items-center justify-center w-14 h-16 rounded-lg text-gray-500 hover:bg-gray-50">
+              <span class="text-xs">JUE</span><span class="text-xl font-bold">22</span>
+            </button>
+          </div>
+
+          <!-- Horarios Disponibles -->
+          <h4 class="font-bold text-gray-800 mb-4 text-sm">Horarios disponibles</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-8">
+            <button class="py-2 px-1 border border-gray-200 rounded-lg text-center hover:border-yellow-500 hover:text-yellow-600 transition-colors">
+              <span class="block font-bold text-gray-700">6:00 AM</span><span class="text-[10px] text-gray-400">Disponible</span>
+            </button>
+            <button class="py-2 px-1 border-2 border-yellow-500 bg-yellow-50 rounded-lg text-center relative">
+              <span class="block font-bold text-gray-800">7:00 AM</span><span class="text-[10px] text-gray-500">Seleccionado</span>
+              <svg class="w-4 h-4 text-yellow-500 absolute top-1 right-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            </button>
+            <button class="py-2 px-1 border border-red-200 bg-red-50 rounded-lg text-center opacity-50 cursor-not-allowed">
+              <span class="block font-bold text-gray-500">8:00 AM</span><span class="text-[10px] text-red-400">Agotado</span>
+            </button>
+          </div>
+
+          <!-- Botón Confirmar Reserva -->
+          <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="bg-white p-2 rounded-lg shadow-sm text-yellow-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">Tu reserva</p>
+                <p class="text-xs text-gray-500">Martes 20, 7:00 AM - Área Funcional</p>
+              </div>
+            </div>
+            <button class="bg-[#0a1128] text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-[#1c2541] transition-colors">
+              Confirmar reserva
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Historial Sidebar (Dinámico consumiendo Signals) -->
+        <div class="w-full lg:w-[350px]">
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg text-gray-800">Historial de reservas</h3>
+              <a href="#" class="text-blue-600 text-xs font-bold hover:underline">Ver todas</a>
+            </div>
+
+            <!-- Lista generada por Signal -->
+            <div class="space-y-4">
+              <div *ngFor="let reserva of reservas()" class="flex items-start justify-between border-b border-gray-100 pb-4 last:border-0">
+                <div class="flex gap-3">
+                  <!-- Ícono dinámico según estado -->
+                  <div class="mt-1">
+                    <svg *ngIf="reserva.estado !== 'CANCELADO'" class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <svg *ngIf="reserva.estado === 'CANCELADO'" class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-gray-800">{{ reserva.fechaReserva }}</p>
+                    <p class="text-xs text-gray-500">{{ reserva.horaInicio }} - {{ reserva.horaFin }}</p>
+                    <!-- Opción de cancelar si está activa -->
+                    <button *ngIf="reserva.estado !== 'CANCELADO'" class="text-[10px] text-red-500 font-bold hover:underline mt-1">
+                      Cancelar reserva
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Badge de estado -->
+                <span class="px-2 py-1 text-[10px] font-bold rounded"
+                      [ngClass]="{
+                        'bg-green-100 text-green-700': reserva.estado === 'ASISTIDO',
+                        'bg-yellow-100 text-yellow-700': reserva.estado === 'ACTIVA' || reserva.estado === 'PENDIENTE',
+                        'bg-red-100 text-red-700': reserva.estado === 'CANCELADO'
+                      }">
+                  {{ reserva.estado }}
+                </span>
+              </div>
+              
+              <!-- Estado vacío -->
+              <div *ngIf="reservas().length === 0" class="text-center py-6 text-gray-500 text-sm">
+                No tienes reservas en tu historial.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,1 +1,77 @@
-<p>perfilcomponent works!</p>
+<div class="p-8 max-w-2xl">
+  <h1 class="text-2xl font-bold text-[#0a1128] mb-6">Mi Perfil</h1>
+
+  @if (cargando()) {
+    <p class="text-gray-400">Cargando tu perfil...</p>
+  } @else if (error()) {
+    <p class="text-red-500">{{ error() }}</p>
+  } @else if (perfil(); as p) {
+
+    @if (!editando()) {
+      <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+        <div class="flex justify-between">
+          <div>
+            <p class="text-xs text-gray-400">Nombre completo</p>
+            <p class="font-semibold text-[#0a1128]">{{ p.nombreCompleto }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xs text-gray-400">Código universitario</p>
+            <p class="font-semibold text-[#0a1128]">{{ p.codigoUniversitario }}</p>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-400">Correo institucional</p>
+          <p class="font-semibold text-[#0a1128]">{{ p.correoInstitucional }}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-gray-400">Peso</p>
+            <p class="font-semibold text-[#0a1128]">{{ p.peso }} kg</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400">Estatura</p>
+            <p class="font-semibold text-[#0a1128]">{{ p.estatura }} m</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400">Nivel</p>
+            <p class="font-semibold text-[#0a1128]">{{ p.nivel }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400">Objetivo</p>
+            <p class="font-semibold text-[#0a1128]">{{ p.objetivo }}</p>
+          </div>
+        </div>
+
+        <button (click)="abrirEdicion()"
+          class="bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold px-5 py-2.5 rounded-xl mt-2">
+          Editar datos
+        </button>
+      </div>
+    } @else {
+      <div class="bg-white rounded-2xl shadow p-6 space-y-3">
+        <label class="text-xs text-gray-400">Peso (kg)</label>
+        <input type="number" [(ngModel)]="form.peso" class="w-full border rounded-lg px-3 py-2 text-sm">
+
+        <label class="text-xs text-gray-400">Estatura (m)</label>
+        <input type="number" step="0.01" [(ngModel)]="form.estatura" class="w-full border rounded-lg px-3 py-2 text-sm">
+
+        <label class="text-xs text-gray-400">Nivel</label>
+        <select [(ngModel)]="form.nivel" class="w-full border rounded-lg px-3 py-2 text-sm">
+          <option [ngValue]="1">Principiante</option>
+          <option [ngValue]="2">Intermedio</option>
+          <option [ngValue]="3">Avanzado</option>
+        </select>
+
+        <label class="text-xs text-gray-400">Objetivo</label>
+        <input [(ngModel)]="form.objetivo" class="w-full border rounded-lg px-3 py-2 text-sm">
+
+        <div class="flex gap-3 mt-4">
+          <button (click)="cancelar()" class="flex-1 border rounded-lg py-2 text-sm hover:bg-gray-50">Cancelar</button>
+          <button (click)="guardar()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] font-semibold rounded-lg py-2 text-sm">Guardar</button>
+        </div>
+      </div>
+    }
+  }
+</div>
