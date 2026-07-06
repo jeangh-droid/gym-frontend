@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface UsuarioResponseDTO {
   idUsuario: number;
@@ -12,7 +13,7 @@ export interface UsuarioResponseDTO {
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `http://localhost:8080/usuarios`;
+  private readonly apiUrl = `${environment.apiUrl}/usuarios`;
 
   private _usuarios = signal<UsuarioResponseDTO[]>([]);
   private _cargando = signal(false);

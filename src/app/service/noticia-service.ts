@@ -1,5 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface NoticiaDTO {
   idNoticia: number;
@@ -20,7 +21,7 @@ export interface NoticiaInsertDTO {
 @Injectable({ providedIn: 'root' })
 export class NoticiaService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `http://localhost:8080/api/noticias`;
+  private readonly apiUrl = `${environment.apiUrl}/api/noticias`;
 
   private _noticias = signal<NoticiaDTO[]>([]);
   private _cargando = signal(false);

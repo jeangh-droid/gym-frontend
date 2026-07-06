@@ -1,5 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface UsuarioDatosDTO {
   idUsuario: number;
@@ -24,7 +25,7 @@ export interface UsuarioActualizarDTO {
 @Injectable({ providedIn: 'root' })
 export class PerfilService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `http://localhost:8080/usuarios/perfil`;
+  private readonly apiUrl = `${environment.apiUrl}/usuarios/perfil`;
 
   private _perfil = signal<UsuarioDatosDTO | null>(null);
   private _cargando = signal(false);

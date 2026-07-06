@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { LoginRequest } from '../model/login-request';
 import { RegistroRequest } from '../model/registro-request';
 import { AuthResponse } from '../model/auth-response';
+import { environment } from '../../../../environments/environment';
 
 interface JwtClaims {
   sub: string;   // correoInstitucional
@@ -19,7 +20,7 @@ interface JwtClaims {
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:8080/auth';
+  private readonly API_URL = `${environment.apiUrl}/auth`;
 
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
 

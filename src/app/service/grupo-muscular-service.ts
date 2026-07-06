@@ -1,5 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface GrupoMuscularDTO {
   idGrupoMuscular: number;
@@ -17,7 +18,7 @@ export interface GrupoMuscularInsertDTO {
 @Injectable({ providedIn: 'root' })
 export class GrupoMuscularService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `http://localhost:8080/api/grupoMuscular`;
+  private readonly apiUrl = `${environment.apiUrl}/api/grupoMuscular`;
 
   private _grupos = signal<GrupoMuscularDTO[]>([]);
   private _cargando = signal(false);

@@ -1,5 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface EjercicioDTO {
   idEjercicio: number;
@@ -21,7 +22,7 @@ export interface EjercicioInsertDTO {
 @Injectable({ providedIn: 'root' })
 export class EjercicioService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `http://localhost:8080/api/ejercicios`;
+  private readonly apiUrl = `${environment.apiUrl}/api/ejercicios`;
 
   private _ejercicios = signal<EjercicioDTO[]>([]);
   private _cargando = signal(false);
