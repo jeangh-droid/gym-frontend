@@ -1,5 +1,5 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 export interface EjercicioDTO {
   idEjercicio: number;
@@ -49,24 +49,35 @@ export class EjercicioService {
   }
 
   crear(dto: EjercicioInsertDTO): void {
+    this._error.set(null);
     this.http.post<EjercicioDTO>(`${this.apiUrl}/nuevo`, dto).subscribe({
       next: (creado) => this._ejercicios.update(lista => [creado, ...lista]),
-      error: () => this._error.set('No se pudo crear el ejercicio')
+      error: (err: HttpErrorResponse) => this._error.set(this.extraerMensaje(err, 'No se pudo crear el ejercicio'))
     });
   }
 
   actualizar(id: number, dto: EjercicioInsertDTO): void {
+    this._error.set(null);
     this.http.put<EjercicioDTO>(`${this.apiUrl}/${id}`, dto).subscribe({
       next: (actualizado) => this._ejercicios.update(lista =>
         lista.map(e => e.idEjercicio === id ? actualizado : e)),
-      error: () => this._error.set('No se pudo actualizar el ejercicio')
+      error: (err: HttpErrorResponse) => this._error.set(this.extraerMensaje(err, 'No se pudo actualizar el ejercicio'))
     });
   }
 
   eliminar(id: number): void {
-    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+    this._error.set(null);
+    // FIX: el backend responde con texto plano ("Ejercicio eliminado correctamente"),
+    // no JSON. Sin { responseType: 'text' }, Angular intenta parsear ese string como
+    // JSON, falla, y dispara el callback de error aunque el borrado sí haya ocurrido.
+    this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' }).subscribe({
       next: () => this._ejercicios.update(lista => lista.filter(e => e.idEjercicio !== id)),
-      error: () => this._error.set('No se pudo eliminar el ejercicio')
+      error: (err: HttpErrorResponse) => this._error.set(this.extraerMensaje(err, 'No se pudo eliminar el ejercicio'))
     });
+  }
+
+  private extraerMensaje(err: HttpErrorResponse, fallback: string): string {
+    // El backend devuelve el mensaje de error como texto plano en el body
+    return typeof err.error === 'string' && err.error.trim() ? err.error : fallback;
   }
 }

@@ -23,7 +23,9 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/assets", 
+              "src/_redirects"
             ],
             "styles": ["src/material-theme.scss", "src/styles.css"]
           },
