@@ -1,5 +1,5 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 export interface GrupoMuscularDTO {
   idGrupoMuscular: number;
@@ -37,24 +37,33 @@ export class GrupoMuscularService {
   }
 
   crear(dto: GrupoMuscularInsertDTO): void {
+    this._error.set(null);
     this.http.post<GrupoMuscularDTO>(`${this.apiUrl}/nuevo`, dto).subscribe({
       next: (creado) => this._grupos.update(lista => [...lista, creado]),
-      error: () => this._error.set('No se pudo registrar el grupo muscular')
+      error: (err: HttpErrorResponse) => this._error.set(this.extraerMensaje(err, 'No se pudo registrar el grupo muscular'))
     });
   }
 
   actualizar(id: number, dto: GrupoMuscularInsertDTO): void {
+    this._error.set(null);
     this.http.put<GrupoMuscularDTO>(`${this.apiUrl}/${id}`, dto).subscribe({
       next: (actualizado) => this._grupos.update(lista =>
         lista.map(g => g.idGrupoMuscular === id ? actualizado : g)),
-      error: () => this._error.set('No se pudo actualizar el grupo muscular')
+      error: (err: HttpErrorResponse) => this._error.set(this.extraerMensaje(err, 'No se pudo actualizar el grupo muscular'))
     });
   }
 
   eliminar(id: number): void {
-    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+    this._error.set(null);
+    this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' }).subscribe({
       next: () => this._grupos.update(lista => lista.filter(g => g.idGrupoMuscular !== id)),
-      error: () => this._error.set('No se pudo eliminar. Puede tener ejercicios asociados.')
+      error: (err: HttpErrorResponse) => {
+        this._error.set(this.extraerMensaje(err, 'No se pudo eliminar el grupo muscular'));
+      }
     });
+  }
+
+  private extraerMensaje(err: HttpErrorResponse, fallback: string): string {
+    return typeof err.error === 'string' && err.error.trim() ? err.error : fallback;
   }
 }

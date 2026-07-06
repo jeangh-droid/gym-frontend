@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 export interface UsuarioResponseDTO {
   idUsuario: number;
@@ -33,9 +33,12 @@ export class UsuarioService {
   }
 
   eliminar(id: number): void {
-    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+    this._error.set(null);
+    this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' }).subscribe({
       next: () => this._usuarios.update(lista => lista.filter(u => u.idUsuario !== id)),
-      error: () => this._error.set('No se pudo eliminar el usuario')
+      error: (err: HttpErrorResponse) => {
+        this._error.set(typeof err.error === 'string' && err.error.trim() ? err.error : 'No se pudo eliminar el usuario');
+      }
     });
   }
 }
