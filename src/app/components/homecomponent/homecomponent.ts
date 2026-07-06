@@ -42,7 +42,7 @@ export class Homecomponent implements OnInit {
   integrantes = [
     { nombre: 'Abel Leon', foto: '/fotos/foto1.png' },
     { nombre: 'Joel Barrios', foto: '/fotos/foto2.png' },
-    { nombre: 'Jesus Lopez', foto: '/fotos/foto3.png' },
+    { nombre: 'Jesus Lopez', foto: '/fotos/foto3.jpg' },
     { nombre: 'Jostin Galarza', foto: '/fotos/foto4.png' },
     { nombre: 'Jean Quispe', foto: '/fotos/foto5.png' },
   ];
